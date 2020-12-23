@@ -1,5 +1,6 @@
 import uuid
 from django.http import JsonResponse
+from rest_framework.decorators import action
 from rest_framework.views import APIView
 
 from Auth.models import UserInfo
@@ -25,6 +26,10 @@ class LoginView(APIView):
             'user': result.data
         }
         return JsonResponse(data=data, status=200)
+
+    @action(methods=['post'], detail=False)
+    def update_user(self, request):
+        print(request.data)
 
 
 class CodeView(APIView):
