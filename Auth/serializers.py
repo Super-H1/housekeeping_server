@@ -3,7 +3,7 @@ import uuid
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from Auth.models import UserInfo
+from user.models import UserInfo
 from utils.redis_set import Res
 from serializers.validators import phone_validator
 

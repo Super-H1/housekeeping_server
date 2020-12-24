@@ -16,8 +16,8 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
-
 urlpatterns = [
     url('admin/', admin.site.urls),
-    url('^api/auth/', include('Auth.urls'))
+    url('^api/auth/', include('Auth.urls')),
+    url('^api/user/', include('user.urls'))
 ]

@@ -1,10 +1,10 @@
 from django.conf.urls import url
 
-from Auth import views
+
+from Auth.views import LoginView, CodeView
 
 urlpatterns = [
-    url(r'^login/', views.LoginView.as_view()),
-    url(r'^update_user/', views.LoginView.as_view()),
-    url(r'^getcode/', views.CodeView.as_view()),
+    url(r'login/$', LoginView.as_view()),
+    url(r'getcode/$', CodeView.as_view()),
 
 ]

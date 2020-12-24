@@ -1,15 +1,15 @@
-import uuid
+
 from django.http import JsonResponse
-from rest_framework.decorators import action
 from rest_framework.views import APIView
 
-from Auth.models import UserInfo
+
 from Auth.serializers import LoginSerializer, CodeSerializer
 from utils.common_utils import producecode
 from utils.redis_set import Res
 
 
 class LoginView(APIView):
+
     def post(self, request):
         # 验证前端数据
         serializer = LoginSerializer(data=request.data)
@@ -21,16 +21,13 @@ class LoginView(APIView):
         # 反序列化为json数据
         user_obj = serializer.create(serializer.validated_data)
         result = LoginSerializer(user_obj)
+        user_data = result.data
+        user_data['id'] = user_obj.id
         data = {
             'login': True,
-            'user': result.data
+            'user': user_data
         }
         return JsonResponse(data=data, status=200)
-
-    @action(methods=['post'], detail=False)
-    def update_user(self, request):
-        print(request.data)
-
 
 class CodeView(APIView):
     def get(self, request):
