@@ -18,6 +18,11 @@ from django.contrib import admin
 
 urlpatterns = [
     url('admin/', admin.site.urls),
+    url('^api/basic/', include('basic.urls')),
     url('^api/auth/', include('Auth.urls')),
-    url('^api/user/', include('user.urls'))
+    url('^api/user/', include('user.urls')),
+    url('^api/category/', include('category.urls')),
+    url('^api/service/', include('service.urls')),
+    url(r'^api/remark/', include('comment.urls')),
+    url(r'^api/cart/', include('cart.urls')),
 ]

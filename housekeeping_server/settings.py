@@ -39,7 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Auth',
     'rest_framework',
-    'user'
+    'user',
+    'basic',
+    'category',
+    'service',
+    'comment',
+    'cart',
 ]
 
 MIDDLEWARE = [
@@ -142,3 +147,9 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# 腾讯云密钥
+SecretId = 'AKIDok6RN05wn7FxRexZBVaAVe17MjphmomZ'
+SecretKey = 'pkW3Ypvpa8U1KYVHx52te9ON9YqxBd4E'
+Bucket = 'housekeeping-1304673635'
+Region = 'ap-shanghai'

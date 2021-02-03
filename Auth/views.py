@@ -1,9 +1,8 @@
-
 from django.http import JsonResponse
 from rest_framework.views import APIView
 
-
 from Auth.serializers import LoginSerializer, CodeSerializer
+from user.serializers import UserSerializer, User_RoleSerializer
 from utils.common_utils import producecode
 from utils.redis_set import Res
 
@@ -19,15 +18,34 @@ class LoginView(APIView):
         # 判断用户是否创建
         # validated_data用于获取验证并处理好的数据
         # 反序列化为json数据
-        user_obj = serializer.create(serializer.validated_data)
-        result = LoginSerializer(user_obj)
+        user_obj = serializer.create(request.data)
+        result = UserSerializer(user_obj)
         user_data = result.data
-        user_data['id'] = user_obj.id
+        user_roles = user_obj.roles.all()
+        permissions = []
+        if user_roles:
+            for role in user_roles:
+                ret = {
+                    'id': None,
+                    'title': None,
+                    'code': None
+                }
+                permission = role.permissions.all()
+                if permission:
+                    for per in permission:
+                        ret = {
+                            'id': per.id,
+                            'title': per.title,
+                            'code': per.code
+                        }
+                        permissions.append(ret)
+        user_data['permissions'] = permissions
         data = {
             'login': True,
-            'user': user_data
+            'user': user_data,
         }
         return JsonResponse(data=data, status=200)
+
 
 class CodeView(APIView):
     def get(self, request):

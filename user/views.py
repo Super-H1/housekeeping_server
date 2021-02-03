@@ -13,6 +13,26 @@ class UserView(APIView):
         if not serializer.is_valid():
             return JsonResponse(data=None, status=400, safe=False)
         user = UserInfo.objects.filter(id=pk).first()
-        user = serializer.update(user, serializer.validated_data)
-        result = UserSerializer(user)
-        return JsonResponse(data={'flag': True, 'result': result.data}, status=200, safe=False)
+        user_obj = serializer.update(user, serializer.validated_data)
+        result = UserSerializer(user_obj)
+        user_data = result.data
+        user_roles = user_obj.roles.all()
+        permissions = []
+        if user_roles:
+            for role in user_roles:
+                ret = {
+                    'id': None,
+                    'title': None,
+                    'code': None
+                }
+                permission = role.permissions.all()
+                if permission:
+                    for per in permission:
+                        ret = {
+                            'id': per.id,
+                            'title': per.title,
+                            'code': per.code
+                        }
+                        permissions.append(ret)
+        user_data['permissions'] = permissions
+        return JsonResponse(data={'flag': True, 'user': user_data}, status=200, safe=False)
