@@ -1,6 +1,7 @@
 from django.db import models
 
-from user.models import UserInfo, Services
+from service.models import Services
+from user.models import UserInfo
 from utils.base_model import BaseModel
 
 

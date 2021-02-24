@@ -1,8 +1,8 @@
 from django.http import JsonResponse
 from rest_framework.viewsets import ModelViewSet
 
+from cart.models import Cart
 from cart.serializers import CartSerializer
-from user.models import Cart
 
 
 class CartViewSet(ModelViewSet):
@@ -29,3 +29,9 @@ class CartViewSet(ModelViewSet):
         result = serializer.data
         return JsonResponse(data={'flag': True, 'data': result}, status=200)
 
+    def destroy(self, request, pk):
+        instance = self.get_queryset().filter(id=pk).first()
+        if not instance:
+            return JsonResponse(data={'message': '数据错误'}, status=400)
+        instance.delete()
+        return JsonResponse(data=None, status=200, safe=False)

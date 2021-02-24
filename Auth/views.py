@@ -19,6 +19,7 @@ class LoginView(APIView):
         # validated_data用于获取验证并处理好的数据
         # 反序列化为json数据
         user_obj = serializer.create(request.data)
+        request.session['user'] = user_obj
         result = UserSerializer(user_obj)
         user_data = result.data
         user_roles = user_obj.roles.all()

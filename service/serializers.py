@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
+from category.models import Category
 from category.serializers import CategorySerializer
-from user.models import Services
+from service.models import Services
 from utils.common_utils import get_model_fields
 
 
@@ -21,11 +22,15 @@ class ServicesSerializer(serializers.ModelSerializer):
     work_record = serializers.CharField(max_length=1000, allow_null=True, required=False)
     servicesUrl = serializers.CharField(max_length=1000)
     userid = serializers.IntegerField(label='用户id', read_only=True)
+    s_category = CategorySerializer(read_only=True)
 
     class Meta:
         model = Services
         fields = get_model_fields(Services, add_list=['userid'])
 
     def create(self, validated_data):
-        service_obj = Services.objects.create(**validated_data)
+        category = Category.objects.filter(id=validated_data['category_id']).first()
+        service_obj = None
+        if category:
+            service_obj = Services.objects.create(**validated_data,s_category=category)
         return service_obj

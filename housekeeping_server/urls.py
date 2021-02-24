@@ -25,4 +25,5 @@ urlpatterns = [
     url('^api/service/', include('service.urls')),
     url(r'^api/remark/', include('comment.urls')),
     url(r'^api/cart/', include('cart.urls')),
+    url(r'^api/address/', include('address.urls')),
 ]

@@ -1,12 +1,13 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+from cart.models import Cart
+from service.models import Services
 from service.serializers import ServicesSerializer
-from user.models import Cart, Services
 from utils.common_utils import get_model_fields
 
 
-class CartSerializer(serializers.Serializer):
+class CartSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField(label='用户Id')
     good_id = serializers.IntegerField(label='服务Id')
     service = ServicesSerializer(read_only=True)

@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = '=ucede^n)kbinm)-uas6q%iwuv*dj3x8i)!_^&3t75t+od2@3v'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -39,12 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Auth',
     'rest_framework',
+    'service',
     'user',
     'basic',
     'category',
-    'service',
     'comment',
     'cart',
+    'address'
 ]
 
 MIDDLEWARE = [
@@ -77,7 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'housekeeping_server.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
@@ -88,10 +86,13 @@ DATABASES = {
         'PORT': 3306,
         'HOST': '112.124.14.137',
         'USER': 'root',
-        'PASSWORD': 'Hzc123123..'
-    }
-}
+        'PASSWORD': 'Hzc123123..',
+        'OPTIONS': {
+            "init_command": "SET foreign_key_checks = 0;",
+        }
+    },
 
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -128,7 +129,6 @@ CACHES = {
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -141,7 +141,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = False
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/

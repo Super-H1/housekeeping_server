@@ -1,9 +1,11 @@
 from django.http import JsonResponse
 from rest_framework.viewsets import ModelViewSet
 
+from cart.models import Cart
 from category.models import Category
+from service.models import Services
 from service.serializers import ServicesSerializer
-from user.models import Services, UserInfo, Cart
+from user.models import UserInfo
 
 
 class ServiceViewset(ModelViewSet):
