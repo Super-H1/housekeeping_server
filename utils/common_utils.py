@@ -27,3 +27,9 @@ def get_model_fields(obj, related_name=None, remove_list=None, add_list=None):
     if related_name is not None:
         lists.append(related_name)
     return lists
+
+
+def get_num(year, id):
+    num = str(id).zfill(5)
+    num = '{0}{1}{2}'.format('WUTONG', year, num)
+    return num

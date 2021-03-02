@@ -12,6 +12,7 @@ class Address(base_model.BaseModel):
     city = models.CharField(max_length=16, verbose_name='城市')
     location = models.CharField(max_length=16, verbose_name='地区')
     address_detail = models.TextField(verbose_name='详细地址')
+    is_default = models.BooleanField(verbose_name='是否是默认地址', default=False)
 
     class Meta:
         db_table = 'address'

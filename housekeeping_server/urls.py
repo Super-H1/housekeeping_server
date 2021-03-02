@@ -26,4 +26,5 @@ urlpatterns = [
     url(r'^api/remark/', include('comment.urls')),
     url(r'^api/cart/', include('cart.urls')),
     url(r'^api/address/', include('address.urls')),
+    url(r'^api/order/', include('order.urls')),
 ]

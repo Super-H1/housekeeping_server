@@ -12,6 +12,5 @@ urlpatterns = [
     # url(r'^list/$', views.CategoryViewset.as_view())
 ]
 
-print(router.urls)
 urlpatterns += router.urls
 
