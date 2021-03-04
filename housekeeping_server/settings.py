@@ -118,7 +118,7 @@ CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         # 设置为redis所在, 以及所用库序列
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://112.124.14.137:6379",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "CONNECTION_POOL_KWARGS": {"max_connections": 100}
