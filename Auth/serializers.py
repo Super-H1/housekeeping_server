@@ -37,10 +37,10 @@ class LoginSerializer(serializers.Serializer):
         if len(value) != 4:
             raise ValidationError('验证码错误!')
         phone = self.initial_data.get('phone')
-        code_redis = Res.get(phone).decode('utf-8')
+        key = 'House' + phone
+        code_redis = Res.get(key).decode('utf-8')
         if not code_redis:
             raise ValidationError('验证码已过期！')
         if value.lower() != code_redis.lower():
             raise ValidationError('验证码错误!')
         return value
-

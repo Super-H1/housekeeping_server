@@ -57,7 +57,8 @@ class CodeView(APIView):
             phone = serializer.validated_data.get('phone')
             code = producecode()
             # 设置过期时间
-            Res.set(phone, code, ex=60 * 5)
+            key = 'House' + phone
+            Res.set(key, code, ex=60 * 5)
             print('验证码：', code)
             data = {
                 'code': code
