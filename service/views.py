@@ -48,3 +48,20 @@ class ServiceViewset(ModelViewSet):
             if cart_good:
                 res['good_num'] = cart_good.good_num
         return JsonResponse(data=resultData, status=200, safe=False)
+
+    # def retrieve(self, request, *args, **kwargs):
+    #     # id = request.query_params.get('pk', None)
+    #     # queryset = Services.objects.filter(category_id=id).order_by('-creation_time')
+    #     obj = self.get_object()
+    #     result = self.get_serializer(obj, many=True)
+    #     res = result.data
+    #     category = Category.objects.filter(id=res['category_id']).first()
+    #     res['price'] = 'NA'
+    #     res['good_num'] = 0
+    #     if category:
+    #         res['category_name'] = category.name
+    #         res['price'] = category.price
+    #         if res['grade'] > 1:
+    #             res['price'] = res['grade'] * category.price * 0.85
+    #     return JsonResponse(data=res, status=200, safe=False)
+

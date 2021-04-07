@@ -1,8 +1,10 @@
 from django.http import JsonResponse
+from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
 
 from order.models import Order, OrderService
 from order.serializers import OrderSerializer, OrderServiceSerializer
+from utils.custom_enum import OrderStatus
 from utils.redis_set import Res
 
 
@@ -64,6 +66,18 @@ class OrderViewset(ModelViewSet):
             service_list.append(item['service'])
         data['service'] = service_list
         return JsonResponse(data={'flag': True, 'result': data}, status=200)
+
+    @action(methods=['post'], detail=False)
+    def pay_order(self, request):
+        id = request.data.get('id')
+        instance = Order.objects.filter(id=id).first()
+        if instance:
+            instance.status = OrderStatus.Paid.value
+            instance.save()
+        return JsonResponse(data={'flag': True, 'result': None}, status=200)
+
+
+
 
 
 

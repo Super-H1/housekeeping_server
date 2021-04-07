@@ -6,8 +6,9 @@ from order import views
 router = DefaultRouter()
 router.register('make_order', views.OrderViewset, basename='make_order')
 router.register('show_order', views.OrderViewset, basename='show_order')
+router.register('order_list', views.OrderViewset, basename='order_list')
 urlpatterns = [
-
+    url(r'^pay_order/$', views.OrderViewset.as_view({'post': 'pay_order'}))
 ]
 
 urlpatterns += router.urls
