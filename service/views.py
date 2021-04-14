@@ -30,9 +30,17 @@ class ServiceViewset(ModelViewSet):
     def list(self, request):
         id = request.query_params.get('pk', None)
         user_id = request.query_params.get('user_id', None)
-        queryset = self.get_queryset()
+        place = request.query_params.get('place', None)
+        type = request.query_params.get('type', None)
+        queryset = self.get_queryset().order_by('-creation_time')
+        if type == 'list':
+            queryset = queryset[:4]
+        if type == 'hot':
+            queryset = queryset.filter(grade__gt=3).all()
         if id:
-            queryset = Services.objects.filter(category_id=id).order_by('-creation_time')
+            queryset = Services.objects.filter(category_id=id)
+            if place:
+                queryset = queryset.filter(native_place=place).all()
         result = self.get_serializer(queryset, many=True)
         resultData = result.data
         for res in resultData:
