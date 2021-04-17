@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
 
+from order.logics import add_reward_to_user
 from order.models import Order, OrderService
 from order.serializers import OrderSerializer, OrderServiceSerializer
 from utils.custom_enum import OrderStatus
@@ -74,6 +75,8 @@ class OrderViewset(ModelViewSet):
         if instance:
             instance.status = OrderStatus.Paid.value
             instance.save()
+            # 添加赏金记录
+            add_reward_to_user(instance)
         return JsonResponse(data={'flag': True, 'result': None}, status=200)
 
 

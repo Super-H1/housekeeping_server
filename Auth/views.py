@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from rest_framework.views import APIView
 
 from Auth.serializers import LoginSerializer, CodeSerializer
+from reward.models import Reward
 from user.serializers import UserSerializer, User_RoleSerializer
 from utils.common_utils import producecode
 from utils.redis_set import Res
@@ -22,6 +23,11 @@ class LoginView(APIView):
         Res.set('user_id', user_obj.id, ex=1393840000)
         result = UserSerializer(user_obj)
         user_data = result.data
+        reward = Reward.objects.filter(user=user_obj, is_grant=True).first()
+        if reward:
+            user_data['reward'] = reward.total_money
+        else:
+            user_data['reward'] = 0
         user_roles = user_obj.roles.all()
         permissions = []
         if user_roles:

@@ -39,8 +39,8 @@ class ServiceViewset(ModelViewSet):
             queryset = queryset.filter(grade__gt=3).all()
         if id:
             queryset = Services.objects.filter(category_id=id)
-            if place:
-                queryset = queryset.filter(native_place=place).all()
+        if place:
+            queryset = queryset.filter(native_place=place).all()
         result = self.get_serializer(queryset, many=True)
         resultData = result.data
         for res in resultData:
