@@ -28,4 +28,5 @@ urlpatterns = [
     url(r'^api/address/', include('address.urls')),
     url(r'^api/order/', include('order.urls')),
     url(r'^api/reward/', include('reward.urls')),
+    url(r'^api/collect/', include('collect.urls')),
 ]

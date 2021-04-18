@@ -3,10 +3,12 @@ from rest_framework.viewsets import ModelViewSet
 
 from cart.models import Cart
 from category.models import Category
+from collect.models import Collect
 from service.logics import add_service_user_role
 from service.models import Services
 from service.serializers import ServicesSerializer
 from user.models import UserInfo
+from utils.redis_set import Res
 
 
 class ServiceViewset(ModelViewSet):
@@ -61,19 +63,14 @@ class ServiceViewset(ModelViewSet):
                 res['good_num'] = cart_good.good_num
         return JsonResponse(data=resultData, status=200, safe=False)
 
-    # def retrieve(self, request, *args, **kwargs):
-    #     # id = request.query_params.get('pk', None)
-    #     # queryset = Services.objects.filter(category_id=id).order_by('-creation_time')
-    #     obj = self.get_object()
-    #     result = self.get_serializer(obj, many=True)
-    #     res = result.data
-    #     category = Category.objects.filter(id=res['category_id']).first()
-    #     res['price'] = 'NA'
-    #     res['good_num'] = 0
-    #     if category:
-    #         res['category_name'] = category.name
-    #         res['price'] = category.price
-    #         if res['grade'] > 1:
-    #             res['price'] = res['grade'] * category.price * 0.85
-    #     return JsonResponse(data=res, status=200, safe=False)
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        user_id = Res.get('user_id').decode('utf-8')
+        data = serializer.data
+        data['collect'] = False
+        collect = Collect.objects.filter(user_id=user_id, service_id=data['id']).first()
+        if collect:
+            data['collect'] = collect.is_collect
+        return JsonResponse(data)
 
