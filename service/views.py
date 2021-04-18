@@ -3,6 +3,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from cart.models import Cart
 from category.models import Category
+from service.logics import add_service_user_role
 from service.models import Services
 from service.serializers import ServicesSerializer
 from user.models import UserInfo
@@ -24,7 +25,10 @@ class ServiceViewset(ModelViewSet):
             return JsonResponse(data={'message': '该用户不存在'}, status=400)
         user.service.add(service_obj)
         user.save()
+        # 为用户添加service_user角色
+        role = add_service_user_role(user)
         result = self.get_serializer(service_obj)
+        result['roles'] = role
         return JsonResponse(data={'flag': True, 'result': result.data}, status=200)
 
     def list(self, request):
