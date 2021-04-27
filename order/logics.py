@@ -19,3 +19,6 @@ def add_reward_to_user(instance):
         reward.money += float('{:>.2f}'.format(instance.price * 0.1))
         reward.is_grant = False
         reward.save()
+        if reward.total_money - service.grade * 1500 >= 1500:
+            service.grade += 1
+            service.save()

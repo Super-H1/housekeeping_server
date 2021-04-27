@@ -48,7 +48,12 @@ class OrderSerializer(serializers.ModelSerializer):
         year = datetime.datetime.now().year
         q1_creation_time = Q(creation_time__lte=datetime.datetime(year, 12, 31, 23, 59, 59))
         q2_creation_time = Q(creation_time__gte=datetime.datetime(year, 1, 1))
-        count = Order.objects.filter((q1_creation_time & q2_creation_time)).count()
+        orders = Order.objects.filter((q1_creation_time & q2_creation_time)).order_by('-creation_time').all()
+        count = 0
+        if orders:
+            order = orders.first()
+            max_number = order.OrderNumber
+            count = int(max_number[11:])
         new_count = count + 1
         OrderNumber = get_num(year, new_count)
         order_obj = Order.objects.create(user_id=user_id, OrderNumber=OrderNumber, price=price, service_num=service_num,
