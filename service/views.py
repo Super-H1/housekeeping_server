@@ -29,9 +29,10 @@ class ServiceViewset(ModelViewSet):
         user.save()
         # 为用户添加service_user角色
         role = add_service_user_role(user)
-        result = self.get_serializer(service_obj)
+        res = self.get_serializer(service_obj)
+        result = res.data
         result['roles'] = role
-        return JsonResponse(data={'flag': True, 'result': result.data}, status=200)
+        return JsonResponse(data={'flag': True, 'result': result}, status=200, safe=False)
 
     def list(self, request):
         id = request.query_params.get('pk', None)
