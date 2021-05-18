@@ -4,6 +4,7 @@ from rest_framework.viewsets import ModelViewSet
 from cart.models import Cart
 from category.models import Category
 from collect.models import Collect
+from comment.models import Comment
 from service.logics import add_service_user_role
 from service.models import Services
 from service.serializers import ServicesSerializer
@@ -67,11 +68,19 @@ class ServiceViewset(ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
+        comments_list = []
+        comments = Comment.objects.filter(sid=instance.id)
+        for com in comments:
+            user = UserInfo.objects.filter(id=com.uid).first()
+            comment_str = user.nickName + ':' + com.content
+            comments_list.append(comment_str)
         user_id = Res.get('user_id').decode('utf-8')
         data = serializer.data
         data['collect'] = False
         collect = Collect.objects.filter(user_id=user_id, service_id=data['id']).first()
         if collect:
             data['collect'] = collect.is_collect
+        if comments_list:
+            data['comment'] = '<br>'.join(comments_list)
         return JsonResponse(data)
 

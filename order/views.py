@@ -5,6 +5,8 @@ from rest_framework.viewsets import ModelViewSet
 from order.logics import add_reward_to_user
 from order.models import Order, OrderService
 from order.serializers import OrderSerializer, OrderServiceSerializer
+from service.models import Services
+from user.models import UserInfo
 from utils.custom_enum import OrderStatus
 from utils.redis_set import Res
 
@@ -36,10 +38,24 @@ class OrderViewset(ModelViewSet):
 
     def list(self, request):
         user_id = request.query_params.get('user_id', None)
+        type = request.query_params.get('type', None)
+        orders = []
         if not user_id:
             orders = self.get_queryset().filter(status=OrderStatus.AdminCheck.value)
         else:
-            orders = self.get_queryset().filter(user_id=user_id)
+            if user_id:
+                if type:
+                    user = UserInfo.objects.filter(id=user_id).first()
+                    services = user.service.all()
+                    orders = []
+                    for ser in services:
+                        orderservices = OrderService.objects.filter(service_id=ser.id)
+                        for s in orderservices:
+                            order = s.order
+                            if order.status == OrderStatus.Paid.value or order.status == OrderStatus.Accept.value:
+                                orders.append(order)
+                else:
+                    orders = self.get_queryset().filter(user_id=user_id)
         data_list = []
         for order in orders:
             order_service_obj = OrderService.objects.filter(order=order)
@@ -71,6 +87,11 @@ class OrderViewset(ModelViewSet):
 
     @action(methods=['post'], detail=False)
     def pay_order(self, request):
+        '''
+        付款
+        :param request:
+        :return:
+        '''
         id = request.data.get('id')
         instance = Order.objects.filter(id=id).first()
         if instance:
@@ -80,11 +101,76 @@ class OrderViewset(ModelViewSet):
 
     @action(methods=['post'], detail=False)
     def confirm_pay(self, request):
+        '''
+        管理员确认付款
+        :param request:
+        :return:
+        '''
         id = request.data.get('id')
         instance = Order.objects.filter(id=id).first()
         if instance:
             instance.status = OrderStatus.Paid.value
             instance.save()
+        return JsonResponse(data={'flag': True, 'result': None}, status=200)
+
+    @action(methods=['post'], detail=False)
+    def servicer_accept_order(self, request):
+        '''
+        服务人员接受订单
+        :param request:
+        :return:
+        '''
+        id = request.data.get('id')
+        instance = Order.objects.filter(id=id).first()
+        if instance:
+            instance.status = OrderStatus.Accept.value
+            instance.save()
+        return JsonResponse(data={'flag': True, 'result': None}, status=200)
+
+    @action(methods=['post'], detail=False)
+    def servicer_refuse_order(self, request):
+        '''
+        服务人员拒绝订单
+        :param request:
+        :return:
+        '''
+        id = request.data.get('id')
+        instance = Order.objects.filter(id=id).first()
+        if instance:
+            instance.status = OrderStatus.Refuse.value
+            instance.save()
+        return JsonResponse(data={'flag': True, 'result': None}, status=200)
+
+    @action(methods=['post'], detail=False)
+    def servicer_complete_order(self, request):
+        '''
+        服务人员确认完成订单
+        :param request:
+        :return:
+        '''
+        id = request.data.get('id')
+        instance = Order.objects.filter(id=id).first()
+        if instance:
+            instance.status = OrderStatus.ServiceComplete.value
+            instance.save()
+        return JsonResponse(data={'flag': True, 'result': None}, status=200)
+
+
+
+    @action(methods=['post'], detail=False)
+    def user_confirm_complete_order(self, request):
+        '''
+        用户确认完成订单
+        :param request:
+        :return:
+        '''
+        id = request.data.get('id')
+        instance = Order.objects.filter(id=id).first()
+        if instance:
+            instance.status = OrderStatus.UserOrderComplete.value
+            instance.save()
             # 添加赏金记录
             add_reward_to_user(instance)
         return JsonResponse(data={'flag': True, 'result': None}, status=200)
+
+
