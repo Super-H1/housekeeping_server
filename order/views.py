@@ -56,6 +56,7 @@ class OrderViewset(ModelViewSet):
                             order = s.order
                             if order.status == OrderStatus.Paid.value or order.status == OrderStatus.Accept.value:
                                 orders.append(order)
+                    orders = list(set(orders))
                 else:
                     orders = self.get_queryset().filter(user_id=user_id)
         data_list = []
