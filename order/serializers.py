@@ -32,6 +32,8 @@ class OrderSerializer(serializers.ModelSerializer):
     price = serializers.FloatField()
     point = serializers.IntegerField(read_only=True)
     payment = serializers.IntegerField(read_only=True)
+    is_evaluate = serializers.IntegerField(read_only=True)
+    is_complian = serializers.IntegerField(read_only=True)
     address_id = serializers.IntegerField(write_only=True)
     cart_id = serializers.ListField(write_only=True)
 

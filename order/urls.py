@@ -15,6 +15,9 @@ urlpatterns = [
     url(r'^servicer_refuse_order/$', views.OrderViewset.as_view({'post': 'servicer_refuse_order'})),
     url(r'^servicer_complete_order/$', views.OrderViewset.as_view({'post': 'servicer_complete_order'})),
     url(r'^user_confirm_complete_order/$', views.OrderViewset.as_view({'post': 'user_confirm_complete_order'})),
+    url(r'^user_refund/$', views.OrderViewset.as_view({'post': 'user_refund'})),
+    url(r'^admin_agree_refund/$', views.OrderViewset.as_view({'post': 'admin_agree_refund'})),
+    url(r'^admin_agree_complain/$', views.OrderViewset.as_view({'post': 'admin_agree_complain'})),
 
 ]
 

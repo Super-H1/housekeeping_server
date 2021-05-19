@@ -13,6 +13,8 @@ class Order(BaseModel):
     price = models.FloatField(verbose_name='商品总价')
     point = models.FloatField(verbose_name='赠送积分', default=5)
     payment = models.IntegerField(verbose_name='支付方式', default=1)  # 1微信支付 2支付宝支付
+    is_evaluate = models.BooleanField(verbose_name='是否评价', default=False)
+    is_complian = models.BooleanField(verbose_name='是否投诉', default=False)
 
     class Meta:
         db_table = 'order'

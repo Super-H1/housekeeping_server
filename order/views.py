@@ -2,7 +2,8 @@ from django.http import JsonResponse
 from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
 
-from order.logics import add_reward_to_user
+from comment.models import Comment
+from order.logics import add_reward_to_user, complain_deductions
 from order.models import Order, OrderService
 from order.serializers import OrderSerializer, OrderServiceSerializer
 from service.models import Services
@@ -41,7 +42,8 @@ class OrderViewset(ModelViewSet):
         type = request.query_params.get('type', None)
         orders = []
         if not user_id:
-            orders = self.get_queryset().filter(status=OrderStatus.AdminCheck.value)
+            orders = self.get_queryset().filter(
+                status__in=[OrderStatus.AdminCheck.value, OrderStatus.Refund.value, OrderStatus.ComplainOrder.value])
         else:
             if user_id:
                 if type:
@@ -135,9 +137,12 @@ class OrderViewset(ModelViewSet):
         :return:
         '''
         id = request.data.get('id')
+        reason = request.data.get('reason', None)
         instance = Order.objects.filter(id=id).first()
         if instance:
             instance.status = OrderStatus.Refuse.value
+            if reason:
+                instance.remark = reason
             instance.save()
         return JsonResponse(data={'flag': True, 'result': None}, status=200)
 
@@ -155,8 +160,6 @@ class OrderViewset(ModelViewSet):
             instance.save()
         return JsonResponse(data={'flag': True, 'result': None}, status=200)
 
-
-
     @action(methods=['post'], detail=False)
     def user_confirm_complete_order(self, request):
         '''
@@ -173,4 +176,49 @@ class OrderViewset(ModelViewSet):
             add_reward_to_user(instance)
         return JsonResponse(data={'flag': True, 'result': None}, status=200)
 
+    @action(methods=['post'], detail=False)
+    def user_refund(self, request):
+        '''
+        用户申请退款
+        :param request:
+        :return:
+        '''
+        id = request.data.get('id')
+        instance = Order.objects.filter(id=id).first()
+        if instance:
+            instance.status = OrderStatus.Refund.value
+            instance.save()
+            # 添加赏金记录
+            add_reward_to_user(instance)
+        return JsonResponse(data={'flag': True, 'result': None}, status=200)
 
+    @action(methods=['post'], detail=False)
+    def admin_agree_refund(self, request):
+        '''
+        管理员同意退款
+        :param request:
+        :return:
+        '''
+        id = request.data.get('id')
+        instance = Order.objects.filter(id=id).first()
+        if instance:
+            instance.status = OrderStatus.OrderRefundSuccess.value
+            instance.save()
+            # 添加赏金记录
+            add_reward_to_user(instance)
+        return JsonResponse(data={'flag': True, 'result': None}, status=200)
+
+    @action(methods=['post'], detail=False)
+    def admin_agree_complain(self, request):
+        '''
+        管理员同意投诉
+        :param request:
+        :return:
+        '''
+        service_id = request.data.get('service_id')
+        service = Services.objects.filter(id=service_id).first()
+        if service:
+            user = service.userinfo_set.all().first()
+            # 添加赏金记录
+            complain_deductions(user)
+        return JsonResponse(data={'flag': True, 'result': None}, status=200)

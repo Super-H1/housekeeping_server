@@ -38,3 +38,6 @@ class Comment(BaseModel):
         elif not hasattr(self, '_com'):
             self._com = Comment.objects.get(self.cid)
         return self._com
+
+
+

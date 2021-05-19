@@ -22,3 +22,14 @@ def add_reward_to_user(instance):
         if reward.total_money - service.grade * 1500 >= 1500:
             service.grade += 1
             service.save()
+
+def complain_deductions(user):
+    '''
+    投诉扣款
+    :return:
+    '''
+    reward, _ = Reward.objects.update_or_create(user=user)
+    reward.money -= 10
+    reward.save()
+
+
