@@ -45,6 +45,9 @@ class ServiceViewset(ModelViewSet):
             queryset = queryset[:4]
         if type == 'hot':
             queryset = queryset.filter(grade__gt=3).all()
+        if type == 'mine':
+            user = UserInfo.objects.filter(id=user_id).first()
+            queryset = user.service.all()
         if id:
             queryset = Services.objects.filter(category_id=id)
         if place:
