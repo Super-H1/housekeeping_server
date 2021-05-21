@@ -124,7 +124,8 @@ CACHES = {
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "CONNECTION_POOL_KWARGS": {"max_connections": 100},
-            "DECODE_RESPONSES": 'Hzc123123..',
+            "PASSWORD": 'Hzc123123..',
+            "DECODE_RESPONSES": True,
         }
     }
 }
