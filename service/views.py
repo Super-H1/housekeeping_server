@@ -62,8 +62,12 @@ class ServiceViewset(ModelViewSet):
             if category:
                 res['category_name'] = category.name
                 res['price'] = category.price
+                res['day_price'] = (res['grade'] * category.price * 8) * 0.75
+                res['month_price'] = (res['grade'] * category.price * 8 * 30) * 0.6
                 if res['grade'] > 1:
                     res['price'] = res['grade'] * category.price * 0.85
+                    res['day_price'] = (res['grade'] * category.price * 0.85 * 8) * 0.75
+                    res['month_price'] = (res['grade'] * category.price * 0.85 * 8 * 30) * 0.6
             if cart_good:
                 res['good_num'] = cart_good.good_num
         return JsonResponse(data=resultData, status=200, safe=False)
@@ -78,12 +82,18 @@ class ServiceViewset(ModelViewSet):
             comment_str = user.nickName + ':' + com.content
             comments_list.append(comment_str)
         user_id = Res.get('user_id').decode('utf-8')
-        data = serializer.data
-        data['collect'] = False
-        collect = Collect.objects.filter(user_id=user_id, service_id=data['id']).first()
+        res = serializer.data
+        res['day_price'] = (res['grade'] * res['s_category']['price'] * 8) * 0.75
+        res['month_price'] = (res['grade'] * res['s_category']['price'] * 8 * 30) * 0.6
+        if res['grade'] > 1:
+            res['price'] = res['grade'] * res['s_category']['price'] * 0.85
+            res['day_price'] = (res['grade'] * res['s_category']['price'] * 0.85 * 8) * 0.75
+            res['month_price'] = (res['grade'] * res['s_category']['price'] * 0.85 * 8 * 30) * 0.6
+        res['collect'] = False
+        collect = Collect.objects.filter(user_id=user_id, service_id=res['id']).first()
         if collect:
-            data['collect'] = collect.is_collect
+            res['collect'] = collect.is_collect
         if comments_list:
-            data['comment'] = '<br>'.join(comments_list)
-        return JsonResponse(data)
+            res['comment'] = '<br>'.join(comments_list)
+        return JsonResponse(res)
 
