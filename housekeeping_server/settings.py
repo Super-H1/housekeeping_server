@@ -123,7 +123,8 @@ CACHES = {
         "LOCATION": "redis://112.124.14.137:6379",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "CONNECTION_POOL_KWARGS": {"max_connections": 100}
+            "CONNECTION_POOL_KWARGS": {"max_connections": 100},
+            "DECODE_RESPONSES": 'Hzc123123..',
         }
     }
 }
